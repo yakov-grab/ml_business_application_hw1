@@ -7,8 +7,8 @@ services:
     hostname: rabbitmq
     restart: always
     ports:
-       - 5672:5672
-       - 15672:15672
+      - 5672:5672
+      - 15672:15672
 
   features:
     build:
@@ -16,14 +16,15 @@ services:
     restart: always
     depends_on:
       - rabbitmq
+    volumes:
+      - ./logs/:/usr/src/app/logs/
 
   model:
     build:
       context: ./model
     restart: always
-    depends_on: 
-          - rabbitmq
-          - features
+    depends_on:
+      - features
 
   metric:
     build:
@@ -33,5 +34,15 @@ services:
       - rabbitmq
       - features
       - model
+
+    volumes:
+      - ./logs/:/usr/src/app/logs/
+
+  plot:
+    build:
+      context: ./plot
+    restart: always
+    depends_on:
+      - metric
     volumes:
       - ./logs/:/usr/src/app/logs/
